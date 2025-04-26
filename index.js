@@ -8,8 +8,8 @@ require('dotenv').config(); // load .env variables
 
 // Load from environment
 const SERVICE_ACCOUNT_JSON = process.env.SERVICE_ACCOUNT_JSON;
-const FOLDER_TO_BACKUP = process.env.FOLDER_TO_BACKUP;
-const VAULTWARDEN_FOLDER_NAME = process.env.VAULTWARDEN_FOLDER_NAME || 'VaultWarden';
+const FOLDER_TO_BACKUP = process.env.FOLDER_TO_BACKUP || '/data';
+const GDRIVE_FOLDER_NAME = process.env.GDRIVE_FOLDER_NAME || 'VaultWarden';
 const MAX_BACKUPS = parseInt(process.env.MAX_BACKUPS || '5', 10);
 const SYNC_MODE = process.env.SYNC_MODE === 'true' || false;
 
@@ -68,7 +68,7 @@ async function createBackup() {
 async function getVaultWardenFolderId(drive) {
   log.process('Looking for VaultWarden folder...');
   const res = await drive.files.list({
-    q: `mimeType='application/vnd.google-apps.folder' and name='${VAULTWARDEN_FOLDER_NAME}' and trashed=false`,
+    q: `mimeType='application/vnd.google-apps.folder' and name='${GDRIVE_FOLDER_NAME}' and trashed=false`,
     fields: 'files(id, name)',
   });
 
@@ -80,7 +80,7 @@ async function getVaultWardenFolderId(drive) {
   log.info('Creating VaultWarden folder...');
   const folder = await drive.files.create({
     resource: {
-      name: VAULTWARDEN_FOLDER_NAME,
+      name: GDRIVE_FOLDER_NAME,
       mimeType: 'application/vnd.google-apps.folder',
     },
     fields: 'id',
@@ -297,7 +297,7 @@ async function main() {
     log.highlight(`Starting ${SYNC_MODE ? 'sync' : 'backup'} process...`);
     const drive = await authenticate();
     log.success('Successfully authenticated to Google Drive.');
-    
+
     const folderId = await getVaultWardenFolderId(drive);
 
     if (SYNC_MODE) {

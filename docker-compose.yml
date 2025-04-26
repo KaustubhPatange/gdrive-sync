@@ -3,13 +3,11 @@ version: '3'
 services:
   backup-service:
     build: .
-    container_name: vaultwarden-backup
+    container_name: gdrive-sync
     restart: unless-stopped
     volumes:
-      - ./:/app
-      - ${FOLDER_TO_BACKUP:-/path/to/vaultwarden}:/data/vaultwarden
+      - ./test:/data
     env_file:
-      - ./scripts/.env
+      - .env
     environment:
       - TZ=UTC
-      - FOLDER_TO_BACKUP=/data/vaultwarden
