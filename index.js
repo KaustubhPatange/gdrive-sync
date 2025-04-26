@@ -4,12 +4,13 @@ const tar = require('tar');
 const crypto = require('crypto');
 const { google } = require('googleapis');
 const chalk = require('chalk');
+
 require('dotenv').config(); // load .env variables
 
 // Load from environment
 const SERVICE_ACCOUNT_JSON = process.env.SERVICE_ACCOUNT_JSON;
 const FOLDER_TO_BACKUP = process.env.FOLDER_TO_BACKUP || '/data';
-const GDRIVE_FOLDER_NAME = process.env.GDRIVE_FOLDER_NAME || 'VaultWarden';
+const GDRIVE_FOLDER_NAME = process.env.GDRIVE_FOLDER_NAME
 const MAX_BACKUPS = parseInt(process.env.MAX_BACKUPS || '5', 10);
 const SYNC_MODE = process.env.SYNC_MODE === 'true' || false;
 
@@ -153,8 +154,7 @@ async function calculateDirectoryHash(directory) {
         if (file === HASH_FILENAME) continue;
 
         const fileContent = fs.readFileSync(fullPath);
-        const relativePath = path.relative(directory, fullPath);
-        hash.update(`${relativePath}:${stat.size}:${stat.mtimeMs}`);
+        hash.update(`${stat.size}:${file}`);
         hash.update(fileContent);
       }
     }
@@ -285,11 +285,13 @@ async function extractBackup(filename, targetDir) {
 
   await tar.x({
     file: filename,
-    cwd: path.dirname(targetDir)
-  });
+    cwd: targetDir,
+    strip: 1, // remove first folder
+  }).catch(err => console.error(err));
 
   log.success(`Backup extracted to ${chalk.bold(targetDir)}`);
 }
+
 
 // Main
 async function main() {
@@ -316,6 +318,12 @@ async function main() {
           await downloadBackup(drive, latestBackup.id, tempBackupFile);
           await extractBackup(tempBackupFile, FOLDER_TO_BACKUP);
           fs.unlinkSync(tempBackupFile);
+          const newHash = await calculateDirectoryHash(FOLDER_TO_BACKUP);
+          const hashFile = await getHashFileFromDrive(drive, folderId);
+          if (!hashFile.exists || hashFile.hash !== newHash) {
+            log.error(`Failed to restore latest backup.`);
+            return
+          }
           log.success('Restored from latest backup.');
         } else {
           log.warning('No backups available. Creating empty folder.');
