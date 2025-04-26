@@ -1,0 +1,21 @@
+{
+  "name": "gdrive-sync",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "backup": "node index.js",
+    "sync": "SYNC_MODE=true node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "A simple utility to backup / sync folders to google drive",
+  "dependencies": {
+    "@google-cloud/local-auth": "^3.0.1",
+    "chalk": "^4.1.2",
+    "dotenv": "^16.5.0",
+    "googleapis": "^148.0.0",
+    "tar": "^6.2.0"
+  }
+}
