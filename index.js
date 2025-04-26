@@ -65,20 +65,19 @@ async function createBackup() {
   log.success(`Backup created: ${chalk.bold(BACKUP_FILENAME)}`);
 }
 
-// Find or create VaultWarden folder
-async function getVaultWardenFolderId(drive) {
-  log.process('Looking for VaultWarden folder...');
+// Find or create Drive folder
+async function getDriveFolderId(drive) {
   const res = await drive.files.list({
     q: `mimeType='application/vnd.google-apps.folder' and name='${GDRIVE_FOLDER_NAME}' and trashed=false`,
     fields: 'files(id, name)',
   });
 
   if (res.data.files.length > 0) {
-    log.success('VaultWarden folder found.');
+    log.success(`${GDRIVE_FOLDER_NAME} folder found.`);
     return res.data.files[0].id;
   }
 
-  log.info('Creating VaultWarden folder...');
+  log.info('Creating Drive folder...');
   const folder = await drive.files.create({
     resource: {
       name: GDRIVE_FOLDER_NAME,
@@ -86,7 +85,7 @@ async function getVaultWardenFolderId(drive) {
     },
     fields: 'id',
   });
-  log.success('VaultWarden folder created.');
+  log.success(`Drive folder created: ${GDRIVE_FOLDER_NAME}`);
   return folder.data.id;
 }
 
@@ -300,7 +299,7 @@ async function main() {
     const drive = await authenticate();
     log.success('Successfully authenticated to Google Drive.');
 
-    const folderId = await getVaultWardenFolderId(drive);
+    const folderId = await getDriveFolderId(drive);
 
     if (SYNC_MODE) {
       log.highlight('Running in sync mode...');
