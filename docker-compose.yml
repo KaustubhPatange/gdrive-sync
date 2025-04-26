@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  backup-service:
+    build: .
+    container_name: vaultwarden-backup
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+      - ${FOLDER_TO_BACKUP:-/path/to/vaultwarden}:/data/vaultwarden
+    env_file:
+      - ./scripts/.env
+    environment:
+      - TZ=UTC
+      - FOLDER_TO_BACKUP=/data/vaultwarden
