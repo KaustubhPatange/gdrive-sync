@@ -3,3 +3,5 @@ test
 .env
 examples
 .DS_Store
+dist
+config.json5

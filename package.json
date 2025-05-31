@@ -2,10 +2,12 @@
   "name": "gdrive-sync",
   "version": "1.0.0",
   "main": "index.js",
+  "bin": {
+    "gdown": "./bin/gdown.js",
+    "sync-compress": "./bin/sync-compress.js"
+  },
   "scripts": {
-    "backup": "node index.js",
-    "sync": "SYNC_MODE=true node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -14,8 +16,18 @@
   "dependencies": {
     "@google-cloud/local-auth": "^3.0.1",
     "chalk": "^4.1.2",
+    "cli-progress": "^3.12.0",
+    "commander": "^11.1.0",
     "dotenv": "^16.5.0",
     "googleapis": "^148.0.0",
+    "json5": "^2.2.3",
     "tar": "^6.2.0"
+  },
+  "devDependencies": {
+    "@types/cli-progress": "^3.11.6",
+    "@types/json5": "^2.2.0",
+    "@types/node": "^22.15.29",
+    "@types/tar": "^6.1.13",
+    "typescript": "^5.8.3"
   }
 }
