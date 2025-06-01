@@ -1,33 +1,36 @@
 {
-  "name": "gdrive-sync",
-  "version": "1.0.0",
-  "main": "index.js",
-  "bin": {
-    "gdown": "./bin/gdown.js",
-    "sync-compress": "./bin/sync-compress.js"
-  },
-  "scripts": {
-    "build": "tsc"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "A simple utility to backup / sync folders to google drive",
-  "dependencies": {
-    "@google-cloud/local-auth": "^3.0.1",
-    "chalk": "^4.1.2",
-    "cli-progress": "^3.12.0",
-    "commander": "^11.1.0",
-    "dotenv": "^16.5.0",
-    "googleapis": "^148.0.0",
-    "json5": "^2.2.3",
-    "tar": "^6.2.0"
-  },
-  "devDependencies": {
-    "@types/cli-progress": "^3.11.6",
-    "@types/json5": "^2.2.0",
-    "@types/node": "^22.15.29",
-    "@types/tar": "^6.1.13",
-    "typescript": "^5.8.3"
-  }
+	"name": "gdrive-sync",
+	"version": "1.0.0",
+	"main": "index.js",
+	"bin": {
+		"gdown": "./bin/gdown.js",
+		"sync-compress": "./bin/sync-compress.js"
+	},
+	"scripts": {
+		"build": "tsc",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write ."
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"description": "A simple utility to backup / sync folders to google drive",
+	"dependencies": {
+		"@google-cloud/local-auth": "^3.0.1",
+		"chalk": "^4.1.2",
+		"cli-progress": "^3.12.0",
+		"commander": "^11.1.0",
+		"dotenv": "^16.5.0",
+		"googleapis": "^148.0.0",
+		"json5": "^2.2.3",
+		"tar": "^6.2.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"@types/cli-progress": "^3.11.6",
+		"@types/json5": "^2.2.0",
+		"@types/node": "^22.15.29",
+		"@types/tar": "^6.1.13",
+		"typescript": "^5.8.3"
+	}
 }
