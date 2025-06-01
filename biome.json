@@ -27,7 +27,7 @@
 				"noForEach": "off"
 			}
 		},
-		"ignore": ["./src/*.js"]
+		"ignore": ["./src/*.js", "./test/**/*"]
 	},
 	"javascript": {
 		"formatter": {
