@@ -77,7 +77,6 @@ async function uploadFile(
 		format: 'Uploading |{bar}| {percentage}% | {value}/{total} KB',
 		barCompleteChar: '\u2588',
 		barIncompleteChar: '\u2591',
-		hideCursor: true,
 	});
 
 	progressBar.start(fileSizeKB, 0);

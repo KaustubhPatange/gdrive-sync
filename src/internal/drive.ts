@@ -193,7 +193,6 @@ async function downloadRegularFile(
 		format: 'Downloading |{bar}| {percentage}% | {value}/{total} KB',
 		barCompleteChar: '\u2588',
 		barIncompleteChar: '\u2591',
-		hideCursor: true,
 	});
 
 	const fileSizeKB = Math.round(fileSize / 1024) || 100; // Use 100KB as default if size is unknown
