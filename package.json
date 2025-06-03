@@ -10,7 +10,7 @@
 		"build": "tsc",
 		"lint": "biome check .",
 		"lint:fix": "biome check --write .",
-		"test": "npm run build; mocha ./dist/test/**/*.js"
+		"test": "npm run build; mocha \"dist/test/**/*.js\""
 	},
 	"keywords": [],
 	"author": "",
@@ -24,6 +24,7 @@
 		"dotenv": "^16.5.0",
 		"googleapis": "^148.0.0",
 		"json5": "^2.2.3",
+		"mime-types": "^3.0.1",
 		"tar": "^6.2.0"
 	},
 	"devDependencies": {
@@ -31,6 +32,7 @@
 		"@types/chai": "^5.2.2",
 		"@types/cli-progress": "^3.11.6",
 		"@types/json5": "^2.2.0",
+		"@types/mime-types": "^3.0.0",
 		"@types/mocha": "^10.0.10",
 		"@types/node": "^22.15.29",
 		"@types/sinon": "^17.0.4",

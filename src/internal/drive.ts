@@ -5,6 +5,7 @@ import cliProgress from 'cli-progress';
 import type { GaxiosError } from 'gaxios';
 import type { drive_v3 } from 'googleapis';
 import log from './log';
+import { parseHashFile } from './hash';
 
 /**
  * Extract file ID from Google Drive URL
@@ -351,4 +352,96 @@ export async function checkFileExists(
 	}
 
 	return null;
+}
+
+const HASH_FILENAME = '.gdown-hashes.txt';
+
+/**
+ * Get hash file from Google Drive
+ */
+export async function getHashFileFromDrive(
+	drive: drive_v3.Drive,
+	folderId: string,
+): Promise<{ exists: boolean; hashes: Map<string, string>; fileId?: string }> {
+	log.process('Retrieving hash file from Google Drive...');
+
+	try {
+		const res = await drive.files.list({
+			q: `'${folderId}' in parents and name='${HASH_FILENAME}' and trashed=false`,
+			fields: 'files(id, name)',
+		});
+
+		if (res.data.files && res.data.files.length === 0) {
+			log.info('No hash file found on Google Drive.');
+			return { exists: false, hashes: new Map() };
+		}
+
+		// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		const fileId = res.data.files!.at(0)!.id!;
+
+		// Download the hash file
+		const response = await drive.files.get({
+			fileId: fileId,
+			alt: 'media',
+		});
+
+		const content = response.data as string;
+		const hashes = parseHashFile(content);
+
+		log.success(`Hash file found with ${hashes.size} entries.`);
+		return { exists: true, hashes, fileId };
+	} catch (error) {
+		log.warning(`Error retrieving hash file: ${(error as Error).message}`);
+		return { exists: false, hashes: new Map() };
+	}
+}
+
+/**
+ * Upload hash file to Google Drive
+ */
+export async function uploadHashFile(
+	drive: drive_v3.Drive,
+	folderId: string,
+	hashContent: string,
+	existingFileId?: string,
+): Promise<void> {
+	log.process('Uploading hash file to Google Drive...');
+
+	const tempFilePath = path.join(process.cwd(), HASH_FILENAME);
+	fs.writeFileSync(tempFilePath, hashContent);
+
+	try {
+		if (existingFileId) {
+			await drive.files.update({
+				fileId: existingFileId,
+				media: {
+					mimeType: 'text/plain',
+					body: fs.createReadStream(tempFilePath),
+				},
+			});
+			log.success('Hash file updated successfully.');
+		} else {
+			const fileMetadata = {
+				name: HASH_FILENAME,
+				parents: [folderId],
+				mimeType: 'text/plain',
+			};
+
+			await drive.files.create({
+				requestBody: fileMetadata,
+				media: {
+					mimeType: 'text/plain',
+					body: fs.createReadStream(tempFilePath),
+				},
+				fields: 'id',
+			});
+			log.success('Hash file created successfully.');
+		}
+	} catch (error) {
+		log.error(`Error uploading hash file: ${(error as Error).message}`);
+	} finally {
+		if (fs.existsSync(tempFilePath)) {
+			fs.unlinkSync(tempFilePath);
+		}
+	}
 }
