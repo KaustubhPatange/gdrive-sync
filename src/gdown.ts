@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import cliProgress from 'cli-progress';
 import { Command } from 'commander';
-import type { GaxiosError, GaxiosPromise, GaxiosResponse } from 'gaxios';
+import type { GaxiosError, GaxiosResponse } from 'gaxios';
 import type { drive_v3 } from 'googleapis';
 import { authenticate } from './internal/auth';
 import {
@@ -163,7 +163,6 @@ async function uploadFolder(
 
 	let filesToUpload: string[] = [];
 	let totalFiles = 0;
-	let remoteHashFileId: string | undefined;
 	let uploadedFiles = 0;
 
 	if (trackChanges) {
@@ -171,7 +170,7 @@ async function uploadFolder(
 		const localHashes = await calculateDirectoryHashes(folderPath);
 
 		const remoteHashes = await getHashFileFromDrive(drive, targetFolderId);
-		remoteHashFileId = remoteHashes.fileId;
+		const remoteHashFileId = remoteHashes.fileId;
 
 		if (remoteHashes.exists) {
 			log.info('Comparing local files with remote hashes...');
@@ -225,14 +224,15 @@ async function uploadFolder(
 			: localHashes;
 
 		for (const filePath of filesToUpload) {
-			const dirPath = path.dirname(filePath);
+			const dirPath = path.dirname(path.relative(folderPath, filePath));
 
 			let currentFolderId = targetFolderId;
 			if (dirPath && dirPath !== '.') {
 				const pathParts = dirPath.split(path.sep);
 
+				let newFolderPath = folderPath;
 				for (const part of pathParts) {
-					const newFolderPath = path.join(folderPath, part);
+					newFolderPath = path.join(newFolderPath, part);
 
 					if (!folderMap.has(newFolderPath)) {
 						const folderExists = await checkFolderExists(
@@ -263,15 +263,15 @@ async function uploadFolder(
 			try {
 				const result = await uploadFile(
 					drive,
-					path.join(folderPath, filePath),
+					filePath,
 					currentFolderId,
 					forceOverwrite,
 				);
 				if (result.upload) {
 					// biome-ignore lint/style/noNonNullAssertion: <explanation>
 					finalUploadedHashes.set(filePath, localHashes.get(filePath)!);
+					uploadedFiles++;
 				}
-				uploadedFiles++;
 			} catch (error) {
 				log.error(`Failed to upload ${filePath}: ${(error as Error).message}`);
 			}
