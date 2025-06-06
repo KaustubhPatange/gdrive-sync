@@ -1,10 +1,10 @@
 import assert from 'assert';
-import * as sinon from 'sinon';
+import { OAuth2Client } from 'google-auth-library';
 import { google } from 'googleapis';
+import * as sinon from 'sinon';
 import { authenticate } from '../../src/internal/auth';
 import * as config from '../../src/internal/config';
 import log from '../../src/internal/log';
-import { OAuth2Client } from 'google-auth-library';
 
 describe('auth module', () => {
 	let sandbox: sinon.SinonSandbox;

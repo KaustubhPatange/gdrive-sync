@@ -4,8 +4,8 @@ import * as path from 'path';
 import cliProgress from 'cli-progress';
 import type { GaxiosError } from 'gaxios';
 import type { drive_v3 } from 'googleapis';
-import log from './log';
 import { parseHashFile } from './hash';
+import log from './log';
 
 /**
  * Extract file ID from Google Drive URL

@@ -1,11 +1,11 @@
 import assert from 'assert';
 import * as path from 'path';
+import * as cliProgress from 'cli-progress';
 import * as sinon from 'sinon';
 import { uploadFile } from '../src/gdown';
 import * as gdown from '../src/gdown';
-import log from '../src/internal/log';
-import * as cliProgress from 'cli-progress';
 import * as drive from '../src/internal/drive';
+import log from '../src/internal/log';
 
 const rootDir = process.cwd();
 interface DriveMockApi {

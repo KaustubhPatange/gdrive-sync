@@ -5,6 +5,7 @@ import cliProgress from 'cli-progress';
 import { Command } from 'commander';
 import type { GaxiosError, GaxiosResponse } from 'gaxios';
 import type { drive_v3 } from 'googleapis';
+import mime from 'mime-types';
 import { authenticate } from './internal/auth';
 import {
 	checkFileExists,
@@ -13,10 +14,10 @@ import {
 	downloadFile,
 	extractFileIdFromUrl,
 	getDriveFolderId,
-	isFolder,
-	verifyFolderExists,
 	getHashFileFromDrive,
+	isFolder,
 	uploadHashFile,
+	verifyFolderExists,
 } from './internal/drive';
 import {
 	calculateDirectoryHashes,
@@ -24,7 +25,6 @@ import {
 	hashMapToString,
 } from './internal/hash';
 import log from './internal/log';
-import mime from 'mime-types';
 
 export async function updateMyTask() {
 	return 'hello';

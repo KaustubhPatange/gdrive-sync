@@ -2,11 +2,11 @@ import assert from 'assert';
 import * as path from 'path';
 import * as sinon from 'sinon';
 import {
-	calculateFileHash,
 	calculateDirectoryHashes,
-	parseHashFile,
-	hashMapToString,
+	calculateFileHash,
 	findChangedFiles,
+	hashMapToString,
+	parseHashFile,
 } from '../../src/internal/hash';
 
 const rootDir = process.cwd();
