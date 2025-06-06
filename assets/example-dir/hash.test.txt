@@ -1,0 +1,1 @@
+a sample test file for hash calculation

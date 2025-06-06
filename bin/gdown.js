@@ -1,4 +1,3 @@
 #!/usr/bin/env node
 
-require('../dist/gdown.js');
-
+require('../dist/src/gdown.js');

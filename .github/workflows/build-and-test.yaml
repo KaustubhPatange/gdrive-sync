@@ -1,0 +1,54 @@
+name: Build & Test (CI)
+
+on:
+  workflow_call:
+
+env:
+  GHA: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup M2
+        id: setup-m2
+        uses: ./.github/actions/setup-m2
+
+      - name: build
+        run: |
+          npm run build
+
+  run-lint:
+    name: Run lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup M2
+        id: setup-m2
+        uses: ./.github/actions/setup-m2
+
+      - name: lint
+        run: |
+          npm run lint
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup M2
+        id: setup-m2
+        uses: ./.github/actions/setup-m2
+
+      - name: test
+        run: |
+          npm run test
+
