@@ -1,0 +1,10 @@
+name: on_pr
+run-name: "on_pr: ${{ github.event.pull_request.number }}"
+
+on:
+  pull_request:
+
+jobs:
+  build-and-test:
+    name: Build & Test (CI)
+    uses: ./.github/workflows/build-and-test.yaml
