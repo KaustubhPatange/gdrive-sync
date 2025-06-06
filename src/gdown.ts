@@ -181,7 +181,9 @@ export async function uploadFolder(
 				`Found ${changed.length} changed files, ${added.length} new files, ${unchanged.length} unchanged files.`,
 			);
 
-			filesToUpload = [...changed, ...added];
+			filesToUpload = [...changed, ...added].map((it) =>
+				path.join(folderPath, it),
+			);
 			totalFiles = filesToUpload.length;
 
 			if (totalFiles === 0) {
@@ -218,11 +220,12 @@ export async function uploadFolder(
 		log.info(`Found ${totalFiles} files to upload.`);
 
 		const finalUploadedHashes = remoteHashes.exists
-			? remoteHashes.hashes
-			: localHashes;
+			? new Map(remoteHashes.hashes)
+			: new Map(localHashes);
 
 		for (const filePath of filesToUpload) {
-			const dirPath = path.dirname(path.relative(folderPath, filePath));
+			const relativePath = path.relative(folderPath, filePath);
+			const dirPath = path.dirname(relativePath);
 
 			let currentFolderId = targetFolderId;
 			if (dirPath && dirPath !== '.') {
@@ -259,7 +262,7 @@ export async function uploadFolder(
 			}
 
 			try {
-				const result = await uploadFile(
+				const result = await exports.uploadFile(
 					drive,
 					filePath,
 					currentFolderId,
@@ -267,7 +270,7 @@ export async function uploadFolder(
 				);
 				if (result.upload) {
 					// biome-ignore lint/style/noNonNullAssertion: <explanation>
-					finalUploadedHashes.set(filePath, localHashes.get(filePath)!);
+					finalUploadedHashes.set(relativePath, localHashes.get(relativePath)!);
 					uploadedFiles++;
 				}
 			} catch (error) {
@@ -311,7 +314,7 @@ export async function uploadFolder(
 
 				if (stats.isFile()) {
 					try {
-						const result = await uploadFile(
+						const result = await exports.uploadFile(
 							drive,
 							itemPath,
 							parentFolderId,

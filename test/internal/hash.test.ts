@@ -50,7 +50,7 @@ describe('hash module', () => {
 			const hashes = await calculateDirectoryHashes(exampleDir);
 
 			// Verify
-			assert.strictEqual(hashes.size, 2);
+			assert.strictEqual(hashes.size, 3);
 			assert.strictEqual(
 				hashes.get('hash.test.txt'),
 				'72cf1997e6bbeaa8b5413dba3d8c9138eaa2dae3433a6c548b1c31207a157935',
@@ -58,6 +58,10 @@ describe('hash module', () => {
 			assert.strictEqual(
 				hashes.get('folderA/sample.txt'),
 				'260e8ca3dee21cd2b5a7e24cff039269558776b3e080f6f4caf7bcebc68a2cc5',
+			);
+			assert.strictEqual(
+				hashes.get('folderA/folderB/sampleB.txt'),
+				'078495d36bf1f56383622a84c29cba1d9917227a2f4151af99553db95ee7b342',
 			);
 		});
 	});
