@@ -1,21 +1,27 @@
 {
-	"name": "gdrive-sync",
-	"version": "1.0.0",
-	"main": "index.js",
+	"name": "@kp2016/gdrive-sync",
+	"version": "1.0.1",
 	"bin": {
 		"gdown": "./bin/gdown.js",
 		"sync-compress": "./bin/sync-compress.js"
 	},
 	"scripts": {
 		"build": "tsc",
+		"prepublishOnly": "npm run build",
+		"prepack": "npm run build",
 		"lint": "biome check .",
 		"lint:fix": "biome check --write .",
 		"test": "npm run build; mocha \"dist/test/**/*.js\""
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/KaustubhPatange/gdrive-sync.git"
+	},
 	"keywords": [],
-	"author": "",
-	"license": "ISC",
+	"author": "Kaustubh Patange <developerkp16@gmail.com>",
+	"license": "MIT",
 	"description": "A simple utility to backup / sync folders to google drive",
+	"files": ["bin/", "dist/", "README.md", "LICENSE"],
 	"dependencies": {
 		"@google-cloud/local-auth": "^3.0.1",
 		"chalk": "^4.1.2",

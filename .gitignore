@@ -4,3 +4,4 @@ examples
 .DS_Store
 dist
 config.json5
+*.tgz
