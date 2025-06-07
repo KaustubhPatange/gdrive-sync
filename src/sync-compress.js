@@ -9,7 +9,7 @@ require('dotenv').config(); // load .env variables
 
 // Load from environment
 const SERVICE_ACCOUNT_JSON = process.env.SERVICE_ACCOUNT_JSON;
-const FOLDER_TO_BACKUP = process.env.FOLDER_TO_BACKUP || '/data';
+const FOLDER_TO_BACKUP = process.env.FOLDER_TO_BACKUP;
 const GDRIVE_FOLDER_NAME = process.env.GDRIVE_FOLDER_NAME;
 const MAX_BACKUPS = Number.parseInt(process.env.MAX_BACKUPS || '5', 10);
 const SYNC_MODE = process.env.SYNC_MODE === 'true' || false;

@@ -1,22 +1,55 @@
-# 🚀 Google Drive Backup & Sync
+# Google Drive Backup & Sync
 
-A simple yet powerful Node.js utility to backup and sync folders to Google Drive with Docker support.
+A powerful Node.js utility for backing up and synchronizing folders to Google Drive.
 
 <p align="center">
-  <img src="assets/screenshot.png" />
+  <img src="assets/screenshot2.png" />
 </p>
 
-## ✨ Features
+## Features
 
-- 📦 Backup folders to Google Drive
-- 🔄 Smart sync mode with change detection
-- 🧹 Automatic cleanup of old backups
-- 🐳 Docker support
-- 🔒 Secure authentication with service accounts
+- Backup folders to Google Drive
+- Smart sync mode with change detection
+- Automatic cleanup of old backups
+- Secure authentication with service accounts
+- Command-line tools for file operations
 
-## 🛠️ Setup Guide
+## Installation
 
-### 1. Google Drive API Setup
+```bash
+npm install @kp2016/gdrive-sync
+```
+
+```bash
+gdown --help
+sync-compress --help
+```
+
+## Tools
+
+This package provides two main command-line tools:
+
+### 1. gdown
+
+A versatile tool for Google Drive operations:
+
+- Upload files and folders
+- Download files and folders
+- List files in a folder
+- Get file information
+
+### 2. sync-compress
+
+A specialized tool for backup and synchronization:
+
+- Creates compressed backups of folders
+- Maintains a specified number of recent backups
+- Detects changes using SHA-256 hashing
+- Restores from latest backup when needed
+
+## Setup Guide
+
+### Google Drive API Setup
 
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Create a new project or select an existing one
@@ -38,16 +71,59 @@ A simple yet powerful Node.js utility to backup and sync folders to Google Drive
    - Share it with the service account email
    - Give "Editor" access
 
-### 2. Environment Configuration
+### Configuration
 
-Create a `.env` file with the following settings:
+
+
+## Usage
+
+### gdown
+
+Create a `config.json5` file with the following settings:
+
+```json5
+{
+  // Authentication type: 'service' or 'oauth'
+  "loginType": "service",
+  
+  // Path to service account JSON file (for service account auth)
+  "serviceAccount": "./service-account.json",
+  
+  // OAuth settings (for OAuth authentication)
+  "oauth": {
+    "clientId": "your-client-id",
+    "clientSecret": "your-client-secret"
+  }
+}
+```
+
+```bash
+# Upload a file
+gdown upload path/to/file.txt --folder FOLDER_ID_or_URL --config config.json5
+
+# Upload a folder content with only files that are changed by hash
+gdown upload path/to/folder --folder FOLDER_ID_or_URL --config config.json5 --track
+
+# Download a file
+gdown download FILE_ID_OR_URL --output path/to/save --config config.json5
+
+# List files in a folder
+gdown list --folder "My Folder" --config config.json5
+
+# Get file information
+gdown info FILE_ID_OR_URL --config config.json5
+```
+
+### sync-compress
+
+Create a `.env` file or export following variables:
 
 ```env
 # Google Drive API credentials (paste your service account JSON here)
 SERVICE_ACCOUNT_JSON='{"type":"service_account","project_id":"your-project-id","private_key_id":"your-key-id","private_key":"your-private-key","client_email":"your-service-account@your-project.iam.gserviceaccount.com"}'
 
-# Path to backup folder (use /data when running in Docker)
-FOLDER_TO_BACKUP='/data'
+# Path to backup folder
+FOLDER_TO_BACKUP='/path/to/folder'
 
 # Name of the backup folder in Google Drive
 GDRIVE_FOLDER_NAME='Backups'
@@ -59,56 +135,35 @@ MAX_BACKUPS='5'
 # SYNC_MODE='true'
 ```
 
-## 🚀 Running the Application
-
-### Using Node.js
-
 ```bash
-# Install dependencies
-npm install
-
-# Run the backup
-node index.js
+# Run backup with environment variables
+node sync-compress.js
 ```
 
-### Using Docker
+#### Operation Modes
 
-[![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)](https://hub.docker.com/repository/docker/kp2016/gdrive-backup/)
+- ##### Backup Mode (Default)
+  - Creates a new backup on each run
+  - Maintains the specified number of recent backups
+  - Automatically removes older backups
 
-```bash
-docker run --rm \
-  -v /path/to/folder-to-backup:/data \
-  -v /path/to/.env:/app/.env \
-  kp2016/gdrive-backup:latest
-```
+- ##### Sync Mode
+    - Enable by setting `SYNC_MODE='true'`
+    - Only creates backups when changes are detected
+    - Uses SHA-256 hashing for change detection
+    - Restores from latest backup if target folder is empty
 
-## 🔄 Operation Modes
-
-### Backup Mode (Default)
-- Creates a new backup on each run
-- Maintains the specified number of recent backups
-- Automatically removes older backups
-
-### Sync Mode
-- Enable by setting `SYNC_MODE='true'`
-- Only creates backups when changes are detected
-- Uses SHA-256 hashing for change detection
-- Restores from latest backup if target folder is empty
-
-___
-
-#### Tips
-
+#### Best Practices
 - Keep your service account credentials secure
 - Test the backup and restore process
 - Use cron jobs for scheduled backups
 - Monitor the backup logs
 
-####  Example Cron Job
+#### Example Cron Job
 
 Add this to your `crontab -e` for daily backups at 2 AM:
 ```bash
-0 2 * * * docker run --rm -v /path/to/folder-to-backup:/data -v /path/to/.env:/app/.env kp2016/gdrive-backup:latest
+0 2 * * * cd /path/to/app && node sync-compress.js
 ```
 
 ## License

@@ -561,7 +561,7 @@ function formatErrorDetails(error: GaxiosError): string {
 	return error.message || error.toString();
 }
 
-async function main() {
+export async function main() {
 	try {
 		const program = new Command();
 
