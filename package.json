@@ -21,7 +21,7 @@
 	"author": "Kaustubh Patange <developerkp16@gmail.com>",
 	"license": "MIT",
 	"description": "A simple utility to backup / sync folders to google drive",
-	"files": ["bin/", "dist/", "README.md", "LICENSE"],
+	"files": ["bin/", "dist/src/", "README.md", "LICENSE"],
 	"dependencies": {
 		"@google-cloud/local-auth": "^3.0.1",
 		"chalk": "^4.1.2",
