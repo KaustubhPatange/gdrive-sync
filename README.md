@@ -71,10 +71,6 @@ A specialized tool for backup and synchronization:
    - Share it with the service account email
    - Give "Editor" access
 
-### Configuration
-
-
-
 ## Usage
 
 ### gdown
