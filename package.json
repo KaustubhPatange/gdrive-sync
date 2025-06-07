@@ -1,6 +1,6 @@
 {
 	"name": "@kp2016/gdrive-sync",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"bin": {
 		"gdown": "./bin/gdown.js",
 		"sync-compress": "./bin/sync-compress.js"
