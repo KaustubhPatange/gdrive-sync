@@ -7,6 +7,7 @@ import type { GaxiosError, GaxiosResponse } from 'gaxios';
 import type { drive_v3 } from 'googleapis';
 import mime from 'mime-types';
 import { authenticate } from './internal/auth';
+import { parseConfig } from './internal/config';
 import {
 	checkFileExists,
 	checkFolderExists,
@@ -25,10 +26,6 @@ import {
 	hashMapToString,
 } from './internal/hash';
 import log from './internal/log';
-
-export async function updateMyTask() {
-	return 'hello';
-}
 
 /**
  * Upload a file to Google Drive with progress bar
@@ -516,6 +513,16 @@ async function listFiles(drive: drive_v3.Drive, folderId: string) {
 }
 
 /**
+ */
+async function login(configPath: string) {
+	const config = parseConfig(configPath);
+	if (config.loginType !== 'oauth') {
+		log.error('Invalid loginType, supported are "oauth"');
+	}
+	await authenticate(configPath);
+}
+
+/**
  * Format error details for better display
  */
 function formatErrorDetails(error: GaxiosError): string {
@@ -811,6 +818,19 @@ export async function main() {
 					`Error retrieving file information: ${formatErrorDetails(error)}`,
 				);
 			}
+		});
+
+		// Login command
+		addAuthOption(
+			program
+				.command('login')
+				.description('Generate credentails for OAuth login type'),
+		).action(async (options) => {
+			if (!options.config) {
+				log.error('Config file path is required. Use --config option.');
+				return;
+			}
+			await login(options.config);
 		});
 
 		program.parse();
